@@ -1,0 +1,1 @@
+# To run the Express server, simply npm i && npm run start. Everything should be configured accordingly.
