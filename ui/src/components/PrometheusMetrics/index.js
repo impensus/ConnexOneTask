@@ -1,12 +1,13 @@
 import { Box, Card } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import React, { useEffect, useState, useRef } from "react";
+import { CodeBlock, dracula } from "react-code-blocks";
 import { styled } from "@mui/material/styles";
 
 import { axiosGetMetrics } from "../../api/api";
 
 export const PrometheusMetrics = () => {
   const [prometheusMetrics, setPrometheusMetrics] = useState("");
+  const hasInitialLoadRef = useRef(false);
   const timeEndpoint = "/metrics";
 
   const StyledCard = styled(Card)`
@@ -39,9 +40,16 @@ export const PrometheusMetrics = () => {
   }
 
   useEffect(() => {
+    if (!hasInitialLoadRef.current) {
+      fetchPrometheusMetrics(timeEndpoint);
+      hasInitialLoadRef.current = true;
+    }
+  });
+
+  useEffect(() => {
     const interval = setInterval(() => {
       fetchPrometheusMetrics(timeEndpoint);
-    }, 3000);
+    }, 30000);
     return () => clearInterval(interval);
   });
 
@@ -50,9 +58,11 @@ export const PrometheusMetrics = () => {
       {prometheusMetrics && (
         <StyledCard>
           <ContentArrangement>
-            <SyntaxHighlighter language="javascript">
-              {prometheusMetrics}
-            </SyntaxHighlighter>
+            <CodeBlock
+              text={prometheusMetrics}
+              showLineNumbers={true}
+              theme={dracula}
+            />
           </ContentArrangement>
         </StyledCard>
       )}

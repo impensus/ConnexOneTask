@@ -7,7 +7,7 @@ import { axiosGetTime } from "../../api/api";
 export const TimeDisplay = () => {
   const [serverEpochTime, setServerEpochTime] = useState(Date.now);
   const [differenceEpochTime, setDifferenceEpochTime] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+
   const hasInitialLoadRef = useRef(false);
   const timeEndpoint = "/time";
 
@@ -25,7 +25,6 @@ export const TimeDisplay = () => {
    * @param {string} endpoint The API Endpoint to get request
    */
   function fetchServerEpochTime(endpoint) {
-    setIsLoading(true);
     axiosGetTime(endpoint)
       .then((response) => {
         if (response) {
@@ -36,7 +35,6 @@ export const TimeDisplay = () => {
       .catch((error) => {
         console.log("An error occurred while fetching Epoch time: " + error);
       });
-    setIsLoading(false);
   }
 
   /**
@@ -86,9 +84,7 @@ export const TimeDisplay = () => {
 
   return (
     <>
-      {isLoading && <h1>Component is loading!</h1>}
-
-      {!isLoading && (
+      {serverEpochTime && (
         <StyledCard>
           <ContentArrangement>
             <h2>
